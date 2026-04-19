@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}點燈捐獻 - 線上算命系統{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center fade-in-up">
+    <div class="col-md-8 col-lg-6">
+        <div class="glass-card text-center">
+            <h2 class="mb-3 text-primary-gold"><i class="fa-solid fa-fire-flame-curved me-2"></i>線上點燈捐獻</h2>
+            <p class="text-white-50 mb-4">捐獻香油錢，感謝神恩與支持系統維運</p>
+            
+            <form action="{{ url_for('donation.donate') }}" method="POST">
+                
+                <div class="form-floating mb-3 text-start">
+                    <input type="number" class="form-control fs-4 fw-bold text-primary-gold" id="amount" name="amount" min="1" step="1" required placeholder="金額">
+                    <label for="amount" class="text-dark">捐獻金額 (新台幣元)</label>
+                </div>
+                
+                <div class="form-floating mb-4 text-start">
+                    <textarea class="form-control" id="message" name="message" placeholder="祝福語" style="height: 120px;"></textarea>
+                    <label for="message" class="text-dark">祈福語 / 備註事項 (選填)</label>
+                </div>
+                
+                {% if not user %}
+                    <div class="alert alert-info text-start" style="background: rgba(13, 202, 240, 0.1); border-color: rgba(13, 202, 240, 0.2); color: #fff;">
+                        <i class="fa-solid fa-circle-info me-2"></i> 您目前未登入，此筆捐獻將以匿名身分記錄。
+                    </div>
+                {% endif %}
+
+                <button type="submit" class="btn btn-gold-solid btn-lg w-100 rounded-pill mt-2">
+                    <i class="fa-solid fa-hand-holding-heart me-2"></i> 確認捐獻
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

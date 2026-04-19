@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}首頁 - 線上算命系統{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 text-center fade-in-up">
+        
+        <div class="mb-5">
+            <h1 class="display-3 fw-bold mb-3"><i class="fa-solid fa-cloud-moon text-primary-gold me-3"></i></h1>
+            <h1 class="display-4 fw-bold mb-4">誠心叩問，指引迷惘</h1>
+            <p class="lead text-white-50">隨時隨地，透過現代科技連結傳統信仰，尋求心靈上的平靜與方向。</p>
+        </div>
+
+        {% if user %}
+            <!-- 登入後顯示每日運勢 -->
+            <div class="glass-card mb-5 px-5 py-4">
+                <h3 class="mb-4"><i class="fa-solid fa-sun me-2"></i>{{ user.username }}的今日運勢</h3>
+                <div class="fs-4 fst-italic" style="color: var(--primary-gold);">
+                    「{{ daily_fortune }}」
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-center gap-4">
+                <a href="{{ url_for('divination.draw_page') }}" class="btn btn-gold-solid btn-lg px-5 py-3 fs-5">
+                    <i class="fa-solid fa-hands-praying me-2"></i> 開始抽籤
+                </a>
+                <a href="{{ url_for('divination.history') }}" class="btn btn-gold btn-lg px-5 py-3 fs-5">
+                    <i class="fa-solid fa-scroll me-2"></i> 歷史紀錄
+                </a>
+            </div>
+        {% else %}
+            <!-- 未登入顯示推廣 -->
+            <div class="glass-card mb-5">
+                <div class="row align-items-center">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                        <i class="fa-solid fa-book-journal-whills" style="font-size: 5rem; color: var(--primary-gold);"></i>
+                        <h4 class="mt-4">專屬紀錄</h4>
+                        <p class="text-white-50">註冊加入我們，系統將會保存您每次求籤的結果，方便您日後應證。</p>
+                    </div>
+                    <div class="col-md-6">
+                        <i class="fa-solid fa-hand-holding-dollar" style="font-size: 5rem; color: var(--primary-gold);"></i>
+                        <h4 class="mt-4">線上捐獻</h4>
+                        <p class="text-white-50">香火鼎盛，數位化點燈。誠心意念，無遠弗屆。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center gap-4">
+                <a href="{{ url_for('auth.login_page') }}" class="btn btn-gold-solid btn-lg px-5 py-3 fs-5">
+                    立即登入
+                </a>
+                <a href="{{ url_for('auth.register_page') }}" class="btn btn-outline-light btn-lg px-5 py-3 fs-5 rounded-pill">
+                    註冊會員
+                </a>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

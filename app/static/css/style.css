@@ -1,0 +1,161 @@
+/* 
+  app/static/css/style.css 
+  神秘風高質感深色主題 (Fortune Telling System)
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Outfit:wght@300;400;600&display=swap');
+
+:root {
+  --primary-gold: #d4af37;
+  --primary-gold-hover: #b5952f;
+  --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --text-light: #f5f5f5;
+}
+
+body {
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-light);
+  font-family: 'Outfit', 'Noto Serif TC', serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 導覽列 */
+.navbar-custom {
+  background: rgba(15, 12, 41, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.navbar-custom .navbar-brand {
+  color: var(--primary-gold);
+  font-weight: 700;
+  font-family: 'Noto Serif TC', serif;
+  letter-spacing: 2px;
+  font-size: 1.5rem;
+}
+
+.navbar-custom .nav-link {
+  color: var(--text-light);
+  transition: all 0.3s ease;
+}
+
+.navbar-custom .nav-link:hover {
+  color: var(--primary-gold);
+  transform: translateY(-2px);
+}
+
+/* 玻璃擬態卡片 (Glassmorphism) */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+/* 按鈕樣式 */
+.btn-gold {
+  background-color: transparent;
+  color: var(--primary-gold);
+  border: 1px solid var(--primary-gold);
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+  background-color: var(--primary-gold);
+  color: #0f0c29;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+}
+
+.btn-gold-solid {
+  background-color: var(--primary-gold);
+  color: #0f0c29;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.btn-gold-solid:hover {
+  background-color: var(--primary-gold-hover);
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+}
+
+/* 表單控制項 */
+.form-control, .form-control:focus {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 標題字體 */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Noto Serif TC', serif;
+  color: var(--primary-gold);
+}
+
+/* 籤詩樣式 */
+.lot-result-box {
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid var(--primary-gold);
+  border-radius: 10px;
+  padding: 2.5rem;
+  text-align: center;
+  position: relative;
+}
+
+.lot-grade {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 10px var(--primary-gold);
+  margin-bottom: 1rem;
+}
+
+.lot-poem {
+  font-size: 1.5rem;
+  line-height: 2;
+  white-space: pre-line;
+  letter-spacing: 3px;
+  margin: 2rem 0;
+}
+
+/* 微動畫 */
+.fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

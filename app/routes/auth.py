@@ -1,105 +1,101 @@
 """
 app/routes/auth.py
 會員認證相關路由 (Blueprint: auth，前綴 /auth)
-
-路由清單：
-    GET  /auth/register  → register_page()   — 顯示註冊頁面
-    POST /auth/register  → register()        — 處理註冊送出
-    GET  /auth/login     → login_page()      — 顯示登入頁面
-    POST /auth/login     → login()           — 處理登入送出
-    GET  /auth/logout    → logout()          — 會員登出
 """
+import sqlite3
+import bcrypt
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from app.models.user import User
 
 auth_bp = Blueprint('auth', __name__)
 
-
 @auth_bp.route('/register', methods=['GET'])
 def register_page():
-    """
-    顯示會員註冊頁面。
-
-    Flow:
-        1. 若使用者已登入（session 中有 user_id），直接重導向至首頁
-        2. 否則渲染註冊表單
-
-    Template:
-        auth/register.html
-    """
-    pass  # TODO: 實作於階段六
-
+    """顯示會員註冊頁面"""
+    if 'user_id' in session:
+        return redirect(url_for('main.index'))
+    return render_template('auth/register.html')
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
-    """
-    處理會員註冊表單送出。
+    """處理會員註冊表單送出"""
+    username = request.form.get('username')
+    email = request.form.get('email')
+    password = request.form.get('password')
+    confirm_password = request.form.get('confirm_password')
 
-    Form Fields:
-        username (str): 使用者名稱，需唯一
-        email (str): 電子郵件，需唯一且格式正確
-        password (str): 密碼，最少 6 字元
-        confirm_password (str): 確認密碼，需與 password 相符
+    # 基本驗證
+    if not username or not email or not password or not confirm_password:
+        flash('請填寫所有必填欄位！', 'error')
+        return render_template('auth/register.html')
+    
+    if len(password) < 6:
+        flash('密碼長度至少需要 6 個字元！', 'error')
+        return render_template('auth/register.html')
+        
+    if password != confirm_password:
+        flash('兩次輸入的密碼不一致！', 'error')
+        return render_template('auth/register.html')
 
-    Flow:
-        1. 驗證所有表單欄位（空白、格式、長度）
-        2. 確認 email 與 username 未被使用（User.get_by_email / get_by_username）
-        3. 以 bcrypt 雜湊密碼
-        4. 呼叫 User.create() 寫入資料庫
-        5. 寫入 session（user_id、username），完成自動登入
-        6. 重導向至首頁
+    # 檢查信箱是否已註冊
+    if User.get_by_email(email):
+        flash('此電子郵件已被註冊！', 'error')
+        return render_template('auth/register.html')
+        
+    # 檢查帳號名稱是否已存在
+    if User.get_by_username(username):
+        flash('此帳號名稱已被使用！', 'error')
+        return render_template('auth/register.html')
 
-    On Error:
-        驗證失敗時回傳 auth/register.html，並透過 flash 顯示錯誤訊息
-    """
-    pass  # TODO: 實作於階段六
+    # 密碼雜湊
+    hashed_bytes = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    password_hash = hashed_bytes.decode('utf-8')
 
+    try:
+        # 新增使用者
+        user_id = User.create(username, email, password_hash)
+        # 註冊成功後自動登入
+        session['user_id'] = user_id
+        session['username'] = username
+        flash('註冊成功！歡迎來到線上算命系統。', 'success')
+        return redirect(url_for('main.index'))
+    except sqlite3.IntegrityError:
+        flash('註冊失敗，帳號或信箱可能已存在。', 'error')
+        return render_template('auth/register.html')
 
 @auth_bp.route('/login', methods=['GET'])
 def login_page():
-    """
-    顯示會員登入頁面。
-
-    Flow:
-        1. 若使用者已登入，直接重導向至首頁
-        2. 否則渲染登入表單
-
-    Template:
-        auth/login.html
-    """
-    pass  # TODO: 實作於階段六
-
+    """顯示會員登入頁面"""
+    if 'user_id' in session:
+        return redirect(url_for('main.index'))
+    return render_template('auth/login.html')
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    """
-    處理會員登入表單送出。
+    """處理會員登入表單送出"""
+    email = request.form.get('email')
+    password = request.form.get('password')
 
-    Form Fields:
-        email (str): 電子郵件
-        password (str): 明文密碼（驗證後不儲存）
+    if not email or not password:
+        flash('請輸入電子郵件與密碼！', 'error')
+        return render_template('auth/login.html')
 
-    Flow:
-        1. 用 User.get_by_email(email) 查詢帳號是否存在
-        2. 以 bcrypt.check_password_hash 驗證密碼正確性
-        3. 驗證成功後寫入 session（user_id、username）
-        4. 重導向至首頁
-
-    On Error:
-        帳號不存在或密碼錯誤時，回傳 auth/login.html 並顯示錯誤訊息
-    """
-    pass  # TODO: 實作於階段六
-
+    user = User.get_by_email(email)
+    
+    # 檢查帳號是否存在且密碼正確
+    if user and bcrypt.checkpw(password.encode('utf-8'), user['password_hash'].encode('utf-8')):
+        session.clear() # 清除舊 Session 防範 Session Fixation
+        session['user_id'] = user['id']
+        session['username'] = user['username']
+        flash(f'歡迎回來，{user["username"]}！', 'success')
+        return redirect(url_for('main.index'))
+    else:
+        flash('電子郵件或密碼錯誤！', 'error')
+        return render_template('auth/login.html')
 
 @auth_bp.route('/logout')
 def logout():
-    """
-    會員登出，清除所有 session 資料。
-
-    Flow:
-        1. 呼叫 session.clear()
-        2. 重導向至 /auth/login
-
-    Redirect:
-        /auth/login
-    """
-    pass  # TODO: 實作於階段六
+    """會員登出"""
+    session.clear()
+    flash('您已成功登出。', 'success')
+    return redirect(url_for('auth.login_page'))

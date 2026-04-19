@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}歷史紀錄 - 線上算命系統{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center fade-in-up">
+    <div class="col-lg-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>我的抽籤紀錄</h2>
+            <a href="{{ url_for('divination.draw_page') }}" class="btn btn-gold-solid btn-sm rounded-pill"><i class="fa-solid fa-plus me-1"></i> 新增抽籤</a>
+        </div>
+
+        {% if histories %}
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                {% for item in histories %}
+                <div class="col">
+                    <div class="glass-card h-100 p-4 position-relative">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-warning text-dark fs-6">{{ item.grade }}</span>
+                            <small class="text-white-50">{{ item.drawn_at }}</small>
+                        </div>
+                        <h4 class="text-primary-gold mb-2">第 {{ item.lot_number }} 籤 《{{ item.title }}》</h4>
+                        
+                        {% if item.note %}
+                            <div class="p-3 my-3 rounded" style="background: rgba(0,0,0,0.3); border-left: 3px solid var(--primary-gold);">
+                                <small class="text-white-50 d-block mb-1">您的問題：</small>
+                                <span class="text-white">{{ item.note }}</span>
+                            </div>
+                        {% endif %}
+                        
+                        <p class="text-white-50 mt-3 text-truncate" style="-webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; white-space: normal;">
+                            {{ item.explanation }}
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="glass-card text-center py-5">
+                <i class="fa-solid fa-scroll text-white-50 mb-3" style="font-size: 3rem;"></i>
+                <p class="text-white-50 fs-5">您目前還沒有任何抽籤紀錄。</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

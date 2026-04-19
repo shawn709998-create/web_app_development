@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}捐獻成功 - 線上算命系統{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center fade-in-up">
+    <div class="col-md-8 col-lg-6">
+        <div class="glass-card text-center py-5">
+            <div class="mb-4">
+                <i class="fa-solid fa-circle-check" style="font-size: 5rem; color: #52c41a;"></i>
+            </div>
+            <h2 class="mb-4 text-primary-gold">感謝您的發心捐獻！</h2>
+            <p class="text-white-50 mb-5 fs-5">神明護佑，功德無量。</p>
+            
+            <div class="p-4 rounded text-start mb-5" style="background: rgba(0,0,0,0.4); border: 1px dashed var(--glass-border);">
+                <h5 class="text-white mb-3 border-bottom pb-2 border-secondary">電子收據</h5>
+                <div class="mb-2"><span class="text-white-50 me-3">收據代碼：</span> <strong class="text-primary-gold font-monospace">{{ donation.receipt_code }}</strong></div>
+                <div class="mb-2"><span class="text-white-50 me-3">捐款金額：</span> <span class="text-white">NT$ {{ donation.amount }}</span></div>
+                <div class="mb-2"><span class="text-white-50 me-3">捐款時間：</span> <span class="text-white">{{ donation.donated_at }}</span></div>
+                {% if donation.message %}
+                <div class="mt-3 pt-3 border-top border-secondary">
+                    <span class="text-white-50 d-block mb-1">您的祈福語：</span> 
+                    <span class="text-white fst-italic">"{{ donation.message }}"</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-light rounded-pill px-5">回首頁</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -9,6 +9,7 @@ app/models/user.py
     password_hash TEXT     NOT NULL
     created_at    DATETIME NOT NULL DEFAULT (datetime('now', 'localtime'))
 """
+import sqlite3
 from app.models import get_db
 
 
@@ -34,15 +35,20 @@ class User:
         Raises:
             sqlite3.IntegrityError: 若 email 或 username 重複
         """
-        conn = get_db()
-        cursor = conn.execute(
-            "INSERT INTO user (username, email, password_hash) VALUES (?, ?, ?)",
-            (username, email, password_hash)
-        )
-        conn.commit()
-        new_id = cursor.lastrowid
-        conn.close()
-        return new_id
+        try:
+            conn = get_db()
+            cursor = conn.execute(
+                "INSERT INTO user (username, email, password_hash) VALUES (?, ?, ?)",
+                (username, email, password_hash)
+            )
+            conn.commit()
+            return cursor.lastrowid
+        except sqlite3.Error as e:
+            print(f"Database error in User.create: {e}")
+            raise
+        finally:
+            if 'conn' in locals():
+                conn.close()
 
     # ----------------------------------------------------------
     # READ
@@ -55,58 +61,64 @@ class User:
         Returns:
             list of sqlite3.Row，每筆資料可用欄位名稱存取（如 row['email']）
         """
-        conn = get_db()
-        rows = conn.execute("SELECT * FROM user ORDER BY created_at DESC").fetchall()
-        conn.close()
-        return rows
+        try:
+            conn = get_db()
+            rows = conn.execute("SELECT * FROM user ORDER BY created_at DESC").fetchall()
+            return rows
+        except sqlite3.Error as e:
+            print(f"Database error in User.get_all: {e}")
+            return []
+        finally:
+            if 'conn' in locals():
+                conn.close()
 
     @staticmethod
     def get_by_id(user_id: int):
         """
         依 ID 取得單一會員資料。
-
-        Args:
-            user_id: 欲查詢的會員 id
-
-        Returns:
-            sqlite3.Row 或 None（找不到時）
         """
-        conn = get_db()
-        row = conn.execute("SELECT * FROM user WHERE id = ?", (user_id,)).fetchone()
-        conn.close()
-        return row
+        try:
+            conn = get_db()
+            row = conn.execute("SELECT * FROM user WHERE id = ?", (user_id,)).fetchone()
+            return row
+        except sqlite3.Error as e:
+            print(f"Database error in User.get_by_id: {e}")
+            return None
+        finally:
+            if 'conn' in locals():
+                conn.close()
 
     @staticmethod
     def get_by_email(email: str):
         """
         依電子郵件取得單一會員資料（用於登入驗證）。
-
-        Args:
-            email: 欲查詢的電子郵件
-
-        Returns:
-            sqlite3.Row 或 None
         """
-        conn = get_db()
-        row = conn.execute("SELECT * FROM user WHERE email = ?", (email,)).fetchone()
-        conn.close()
-        return row
+        try:
+            conn = get_db()
+            row = conn.execute("SELECT * FROM user WHERE email = ?", (email,)).fetchone()
+            return row
+        except sqlite3.Error as e:
+            print(f"Database error in User.get_by_email: {e}")
+            return None
+        finally:
+            if 'conn' in locals():
+                conn.close()
 
     @staticmethod
     def get_by_username(username: str):
         """
         依使用者名稱取得單一會員資料（用於名稱唯一性驗證）。
-
-        Args:
-            username: 欲查詢的使用者名稱
-
-        Returns:
-            sqlite3.Row 或 None
         """
-        conn = get_db()
-        row = conn.execute("SELECT * FROM user WHERE username = ?", (username,)).fetchone()
-        conn.close()
-        return row
+        try:
+            conn = get_db()
+            row = conn.execute("SELECT * FROM user WHERE username = ?", (username,)).fetchone()
+            return row
+        except sqlite3.Error as e:
+            print(f"Database error in User.get_by_username: {e}")
+            return None
+        finally:
+            if 'conn' in locals():
+                conn.close()
 
     # ----------------------------------------------------------
     # UPDATE
@@ -115,14 +127,6 @@ class User:
     def update(user_id: int, username: str = None, password_hash: str = None) -> bool:
         """
         更新會員的名稱或密碼（只更新有傳值的欄位）。
-
-        Args:
-            user_id:       欲更新的會員 id
-            username:      新的使用者名稱（可選）
-            password_hash: 新的雜湊密碼（可選）
-
-        Returns:
-            True 若有更新成功，False 若沒有任何欄位被更新
         """
         fields, params = [], []
         if username is not None:
@@ -136,11 +140,18 @@ class User:
             return False
 
         params.append(user_id)
-        conn = get_db()
-        conn.execute(f"UPDATE user SET {', '.join(fields)} WHERE id = ?", params)
-        conn.commit()
-        conn.close()
-        return True
+        
+        try:
+            conn = get_db()
+            conn.execute(f"UPDATE user SET {', '.join(fields)} WHERE id = ?", params)
+            conn.commit()
+            return True
+        except sqlite3.Error as e:
+            print(f"Database error in User.update: {e}")
+            return False
+        finally:
+            if 'conn' in locals():
+                conn.close()
 
     # ----------------------------------------------------------
     # DELETE
@@ -149,16 +160,15 @@ class User:
     def delete(user_id: int) -> bool:
         """
         刪除指定會員（相關的 divination_history 也會被 CASCADE 刪除）。
-
-        Args:
-            user_id: 欲刪除的會員 id
-
-        Returns:
-            True 若刪除成功（rowcount > 0），否則 False
         """
-        conn = get_db()
-        cursor = conn.execute("DELETE FROM user WHERE id = ?", (user_id,))
-        conn.commit()
-        deleted = cursor.rowcount > 0
-        conn.close()
-        return deleted
+        try:
+            conn = get_db()
+            cursor = conn.execute("DELETE FROM user WHERE id = ?", (user_id,))
+            conn.commit()
+            return cursor.rowcount > 0
+        except sqlite3.Error as e:
+            print(f"Database error in User.delete: {e}")
+            return False
+        finally:
+            if 'conn' in locals():
+                conn.close()

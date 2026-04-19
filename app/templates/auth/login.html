@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}登入 - 線上算命系統{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="col-md-6 col-lg-5 fade-in-up">
+        <div class="glass-card text-center">
+            <h2 class="mb-4">會員登入</h2>
+            <p class="text-white-50 mb-4">回到您的心靈歸屬</p>
+            
+            <form action="{{ url_for('auth.login') }}" method="POST">
+                
+                <div class="form-floating mb-3 text-start">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                    <label for="email" class="text-dark">電子郵件</label>
+                </div>
+                
+                <div class="form-floating mb-4 text-start">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                    <label for="password" class="text-dark">密碼</label>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-gold-solid py-2 fs-5">登入</button>
+                </div>
+                
+            </form>
+            
+            <div class="mt-4">
+                <span class="text-white-50">還沒擁有帳號嗎？</span> 
+                <a href="{{ url_for('auth.register_page') }}" style="color: var(--primary-gold); text-decoration: none;">立即註冊</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

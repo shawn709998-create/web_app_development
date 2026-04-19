@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}註冊 - 線上算命系統{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="col-md-6 col-lg-5 fade-in-up">
+        <div class="glass-card text-center">
+            <h2 class="mb-4">註冊會員</h2>
+            <p class="text-white-50 mb-4">建立專屬的靈感庫，保存神明的指引</p>
+            
+            <form action="{{ url_for('auth.register') }}" method="POST">
+                
+                <div class="form-floating mb-3 text-start">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="暱稱" required>
+                    <label for="username" class="text-dark">使用者名稱 / 暱稱</label>
+                </div>
+
+                <div class="form-floating mb-3 text-start">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                    <label for="email" class="text-dark">電子郵件</label>
+                </div>
+                
+                <div class="form-floating mb-3 text-start">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required minlength="6">
+                    <label for="password" class="text-dark">密碼 (最少 6 個字元)</label>
+                </div>
+
+                <div class="form-floating mb-4 text-start">
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required minlength="6">
+                    <label for="confirm_password" class="text-dark">確認密碼</label>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-gold-solid py-2 fs-5">註冊帳號</button>
+                </div>
+                
+            </form>
+            
+            <div class="mt-4">
+                <span class="text-white-50">已經有帳號了嗎？</span> 
+                <a href="{{ url_for('auth.login_page') }}" style="color: var(--primary-gold); text-decoration: none;">直接登入</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

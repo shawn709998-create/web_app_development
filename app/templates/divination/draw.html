@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}求籤 - 線上算命系統{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center text-center fade-in-up">
+    <div class="col-md-8 col-lg-6">
+        <h2 class="mb-4 text-primary-gold">誠心求籤，解答迷惘</h2>
+        <div class="glass-card mb-4">
+            <i class="fa-solid fa-hands-praying" style="font-size: 4rem; color: #fff;"></i>
+            <p class="mt-4 text-white-50">請在心中默念您的姓名、出生年月日及想問的事情，<br>默念完畢後點擊下方按鈕抽籤。</p>
+            
+            <form action="{{ url_for('divination.draw') }}" method="POST">
+                <div class="form-floating mb-4 text-start">
+                    <textarea class="form-control" placeholder="可以將想問的事情寫下來（選填）" id="note" name="note" style="height: 100px"></textarea>
+                    <label for="note" class="text-dark">問題備註（選填）</label>
+                </div>
+                
+                <button type="submit" class="btn btn-gold-solid btn-lg px-5 py-3 fs-5 rounded-pill w-100">
+                    <i class="fa-solid fa-wand-magic-sparkles me-2"></i> 開始抽籤
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

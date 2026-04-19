@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}籤詩結果 - 線上算命系統{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center fade-in-up">
+    <div class="col-md-10 col-lg-8">
+        
+        <div class="text-center mb-4">
+            <h2 class="text-white">第 {{ lot.lot_number }} 籤</h2>
+            <div class="lot-grade my-3">{{ lot.grade }}</div>
+            <h3 class="text-primary-gold mb-3">《 {{ lot.title }} 》</h3>
+        </div>
+
+        <div class="lot-result-box mb-5">
+            <div class="lot-poem text-white">{{ lot.content }}</div>
+            
+            <hr class="border-secondary my-4">
+            
+            <div class="text-start">
+                <h4 class="text-primary-gold mb-3"><i class="fa-solid fa-book-open me-2"></i> 白話解說</h4>
+                <p class="fs-5 text-white-50" style="line-height: 1.8;">{{ lot.explanation }}</p>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5 d-flex flex-column flex-sm-row justify-content-center gap-3">
+            <a href="{{ url_for('divination.history') }}" class="btn btn-outline-light px-4 py-2 rounded-pill">查看所有紀錄</a>
+            <a href="{{ url_for('divination.draw_page') }}" class="btn btn-gold px-4 py-2 rounded-pill">再次求籤</a>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}
